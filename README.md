@@ -1,1 +1,2 @@
 # virbot
+A Discord bot.
