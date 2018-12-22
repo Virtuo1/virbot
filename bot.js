@@ -22,7 +22,7 @@ bot.login(process.env.TOKEN);
 bot.on('ready', () => {
     logger.info('Connected');
     logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
+    logger.info(bot.user.username + ' - (' + bot.user.id + ')');
     logger.info('Running on version ' + package.version);
 
     bot.user.setPresence({
