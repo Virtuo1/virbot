@@ -5,21 +5,40 @@ const config = require('../config.json');
 
 // Export commands
 module.exports = message => {
-    // Ping command
-    if (message.content === config.prefix + 'ping') {
-        message.channel.send('Pong!');
+
+    // Show all commands
+    if (message.content === config.prefix + 'help') {
+        const embed = new Discord.RichEmbed()
+        .setColor(10181046)
+        .setTitle("**Showing all commands**")
+        .setDescription("Requested by " + message.member.user)
+        .addField("Help", "```" + config.prefix + "help\n" + config.prefix + "info```", true)
+        .addField("Utility", "```" + config.prefix + "requestfeature\n" + config.prefix + "flipcoin```", true)
+        .addField("Fun", "```" + config.prefix + "hitormiss```", true)
+        .addField("Misc", "```" + config.prefix + "ping\n" + config.prefix + "username```", true)
+        message.channel.send({embed})
     }
 
     // Info about the bot
     if (message.content === config.prefix + 'info') {
         const embed = new Discord.RichEmbed()
         .setColor(3447003)
-        .setTitle("Virbot")
+        .setTitle("**Virbot**")
         .setDescription(package.description)
         .addField("Bot Version", package.version)
         .addField("Creator", package.author)
         .setURL("https://github.com/Virtuo1/virbot/")
         .setThumbnail("https://avatars.githubusercontent.com/u/37273266")
+        message.channel.send({embed})
+    }
+
+    // Link to feature request
+    if (message.content === config.prefix + 'requestfeature') {
+        const embed = new Discord.RichEmbed()
+        .setColor(15158332)
+        .setAuthor("Request a feature", "https://avatars.githubusercontent.com/u/37273266")
+        .setTitle("Virbot Github Issues")
+        .setURL("https://github.com/Virtuo1/virbot/issues")
         message.channel.send({embed})
     }
 
@@ -36,6 +55,11 @@ module.exports = message => {
                 description: "Tails"
             }});
         }
+    }
+
+    // Ping command
+    if (message.content === config.prefix + 'ping') {
+        message.channel.send('Pong!');
     }
 
     // Echoes your username
