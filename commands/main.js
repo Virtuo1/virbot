@@ -1,13 +1,13 @@
 const Discord = require('discord.js');
 const logger = require('winston');
-const package = require('./package.json');
-const config = require('./config.json');
+const package = require('../package.json');
+const config = require('../config.json');
 
 // Export commands
 module.exports = message => {
     // Ping command
     if (message.content === config.prefix + 'ping') {
-        message.channel.send('pong');
+        message.channel.send('Pong!');
     }
 
     // Info about the bot
@@ -40,7 +40,7 @@ module.exports = message => {
 
     // Echoes your username
     if (message.content === config.prefix + 'username') {
-        message.channel.send('Your username is '+user.username+'!')
+        message.channel.send('Your username is '+message.member.user)
     }
 
     // DAB
