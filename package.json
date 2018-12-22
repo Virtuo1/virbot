@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/Virtuo1/virbot#readme",
   "dependencies": {
-    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
     "discord.js": "^11.4.2",
     "winston": "2.*"
   }
