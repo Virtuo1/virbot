@@ -4,7 +4,7 @@ const package = require('./package.json');
 const config = require('./config.json');
 
 // Require commands
-const main_cmd = require('./commands/main');
+const commands = require('./main');
 
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -35,4 +35,8 @@ bot.on('ready', () => {
 });
 
 // Commands
-bot.on('message', main_cmd);
+bot.on('message', commands.help);
+bot.on('message', commands.utility);
+bot.on('message', commands.fun);
+bot.on('message', commands.games);
+bot.on('message', commands.fun);
