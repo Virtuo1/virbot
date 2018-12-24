@@ -39,4 +39,4 @@ bot.on('message', commands.help);
 bot.on('message', commands.utility);
 bot.on('message', commands.fun);
 bot.on('message', commands.games);
-bot.on('message', commands.fun);
+bot.on('message', commands.misc);

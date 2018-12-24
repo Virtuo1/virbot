@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const logger = require('winston');
 const package = require('./package.json');
 const config = require('./config.json');
-
 const prefix = config.prefix;
 
 //
@@ -31,7 +30,7 @@ exports.help = message => {
     // Info about the bot
     if (command === 'info') {
         const embed = new Discord.RichEmbed()
-        .setColor(3447003)
+        .setColor(10181046)
         .setTitle("**Virbot**")
         .setDescription(package.description)
         .addField("Bot Version", package.version)
@@ -157,7 +156,7 @@ exports.misc = message => {
     // Link to feature request
     if (command === 'requestfeature') {
         const embed = new Discord.RichEmbed()
-        .setColor(15158332)
+        .setColor(10181046)
         .setAuthor("Request a feature", "https://avatars.githubusercontent.com/u/37273266")
         .setTitle("Virbot Github Issues")
         .setURL("https://github.com/Virtuo1/virbot/issues")
