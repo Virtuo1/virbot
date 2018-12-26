@@ -75,6 +75,10 @@ exports.fun = message => {
     if (command === prefix + 'crabrave') {
         let x = args[0];
 
+        for (let i = 0; i < args.length - 1; i++) {
+            x += " " + args[i + 1];
+        }
+
         message.channel.send(":crab: " + x + " IS GONE :crab: " + x + " IS GONE :crab: " + x + " IS GONE :crab:")
     }
 }
