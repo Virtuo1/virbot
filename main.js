@@ -10,11 +10,11 @@ const prefix = config.prefix;
 
 // Help Commands
 exports.help = message => {
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const args = message.content.trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
     // Show all commands
-    if (command === 'help') {
+    if (command === prefix + 'help') {
         const embed = new Discord.RichEmbed()
         .setColor(10181046)
         .setTitle("**Showing all commands**")
@@ -22,13 +22,13 @@ exports.help = message => {
         .addField("Help", "```" + prefix + "help\n" + prefix + "info```", true)
         .addField("Utility", "```" + prefix + "flipcoin```", true)
         .addField("Games", "```" + prefix + "osu <gamemode> <username>```", true)
-        .addField("Fun", "```" + prefix + "hitormiss```", true)
+        .addField("Fun", "```" + prefix + "hitormiss\n" + prefix + "crabrave <something>```", true)
         .addField("Misc", "```" + prefix + "requestfeature\n" + prefix + "ping\n" + prefix + "username```", true)
         message.channel.send({embed})
     }
 
     // Info about the bot
-    if (command === 'info') {
+    if (command === prefix + 'info') {
         const embed = new Discord.RichEmbed()
         .setColor(10181046)
         .setTitle("**Virbot**")
@@ -43,11 +43,11 @@ exports.help = message => {
 
 // Utility commands
 exports.utility = message => {
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const args = message.content.trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
     // Flip a coin
-    if (command === 'flipcoin') {
+    if (command === prefix + 'flipcoin') {
         if (Math.round(Math.random()) == 1) {
             message.channel.send({embed: {
                 color: 15844367,
@@ -64,22 +64,28 @@ exports.utility = message => {
 
 // Fun commands
 exports.fun = message => {
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const args = message.content.trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
     // DAB
-    if (command === 'hitormiss') {
+    if (command === prefix + 'hitormiss') {
         message.channel.send('I guess they never miss ***H U H ?***')
+    }
+
+    if (command === prefix + 'crabrave') {
+        let x = args[0];
+
+        message.channel.send(":crab: " + x + " IS GONE :crab: " + x + " IS GONE :crab: " + x + " IS GONE :crab:")
     }
 }
 
 // Commands for games
 exports.games = message => {
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const args = message.content.trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
     // osu!api
-    if (command === 'osu') {
+    if (command === prefix + 'osu') {
         let https = require('https');
         let mode = args[0];
         let user = args[1];
@@ -139,16 +145,20 @@ exports.games = message => {
                             description: "User was not found"
                         }});
                     } else {
+                        function nrSep(n) {
+                            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+
                         const embed = new Discord.RichEmbed()
                         .setColor(0xF26FC2)
-                        .setTitle("**" + osu_data[0].username + "**")
-                        .setDescription("Showing **osu!" + mode + "** stats of user " + osu_data[0].username)
-                        .addField("Performance Points (pp)", parseFloat(osu_data[0].pp_raw).toFixed(2), true)
+                        .setAuthor(osu_data[0].username, "https://osu.ppy.sh/images/flags/" + osu_data[0].country + ".png")
+                        .setDescription("Showing **osu!" + mode + "** stats of user [" + osu_data[0].username + "](https://osu.ppy.sh/users/" + osu_data[0].user_id + ")")
+                        .addField("Performance Points (pp)", nrSep(parseFloat(osu_data[0].pp_raw).toFixed(2)), true)
                         .addField("Accuracy", parseFloat(osu_data[0].accuracy).toFixed(2) + "%", true)
-                        .addField("PP Rank", osu_data[0].pp_rank, true)
-                        .addField("Ranked Score", osu_data[0].ranked_score, true)
-                        .addField("Playcount", osu_data[0].playcount, true)
-                        .addField("level", parseFloat(osu_data[0].level).toFixed(0), true)
+                        .addField("Rank", nrSep(osu_data[0].pp_rank) + " (Global)\n" + nrSep(osu_data[0].pp_country_rank) + " (" + osu_data[0].country + ")", true)
+                        .addField("Score", nrSep(osu_data[0].ranked_score) + " (Ranked)\n" + nrSep(osu_data[0].total_score) + " (Total)", true)
+                        .addField("Playcount", nrSep(osu_data[0].playcount), true)
+                        .addField("level", parseFloat(osu_data[0].level).toFixed(1), true)
                         .setFooter("Visit player profile for all stats")
                         .setURL("https://osu.ppy.sh/users/" + osu_data[0].user_id)
                         .setThumbnail("https://a.ppy.sh/" + osu_data[0].user_id)
@@ -165,11 +175,11 @@ exports.games = message => {
 
 // Misc
 exports.misc = message => {
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const args = message.content.trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
     // Link to feature request
-    if (command === 'requestfeature') {
+    if (command === prefix + 'requestfeature') {
         const embed = new Discord.RichEmbed()
         .setColor(10181046)
         .setAuthor("Request a feature", "https://avatars.githubusercontent.com/u/37273266")
@@ -179,12 +189,12 @@ exports.misc = message => {
     }
 
     // Ping command
-    if (command === 'ping') {
+    if (command === prefix + 'ping') {
         message.channel.send('Pong!');
     }
 
     // Echoes your username
-    if (command === 'username') {
+    if (command === prefix + 'username') {
         message.channel.send('Your username is ' + message.member.user)
     }
 }

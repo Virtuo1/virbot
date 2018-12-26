@@ -21,9 +21,8 @@ bot.login(process.env.TOKEN);
 // On ready
 bot.on('ready', () => {
     logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.user.username + ' - (' + bot.user.id + ')');
-    logger.info('Running on version ' + package.version);
+    logger.info('Logged in as:');
+    logger.info(bot.user.username + " | Running on version " + package.version);
 
     bot.user.setPresence({
         game: {
