@@ -84,13 +84,19 @@ exports.games = message => {
         let mode = args[0];
         let user = args[1];
 
+        for (let i = 1; i < args.length - 1; i++) {
+            user += " " + args[i + 1];
+        }
+
+        var regex = /[a-z 0-9\-\_]/gi;
+
         if (user == null || mode == null) {
             message.channel.send({embed: {
                 color: 15158332,
                 description: "Missing parameter(s): `!osu <gamemode> <username>`"
             }});
         } else {
-            let mode_id;
+            var mode_id;
             if (mode == 'standard') {
                 mode_id = 0;
             } else if (mode == 'taiko') {
@@ -101,13 +107,24 @@ exports.games = message => {
                 mode_id = 3;
             }
             
-            if (mode_id == null) {
+            if (mode_id == null || regex.test(mode) == false) {
                 message.channel.send({embed: {
                     color: 15158332,
                     description: "Invalid gamemode, choose between: `standard, taiko, ctb, mania`"
                 }});
+            } else if (regex.test(user) == false) {
+                message.channel.send({embed: {
+                    color: 15158332,
+                    description: "User was not found"
+                }});
             } else {
-                https.get('https://osu.ppy.sh/api/get_user?k=' + process.env.OSU_API_KEY + '&m=' + mode_id + '&u=' + user, (res) => {
+                get_data();
+            }
+        }
+
+        // Get data through osu!api
+        function get_data() {
+            https.get('https://osu.ppy.sh/api/get_user?k=' + process.env.OSU_API_KEY + '&m=' + mode_id + '&u=' + user, (res) => {
                 let data = '';
 
                 res.on('data', (chunk) => {
@@ -139,11 +156,9 @@ exports.games = message => {
                         logger.info(message.member.user.tag + " issued osu!api GET request");
                     }
                 });
-
-                }).on("error", (err) => {
+            }).on("error", (err) => {
                     logger.warn("Error: " + err.message);
-                });
-            }
+            });
         }
     }
 }
