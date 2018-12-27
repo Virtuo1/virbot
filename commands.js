@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const logger = require('winston');
 const package = require('./package.json');
 const config = require('./config.json');
+const functions = require('./functions.js');
 const prefix = config.prefix;
 
 //
@@ -73,13 +74,20 @@ exports.fun = message => {
     }
 
     if (command === prefix + 'crabrave') {
-        let x = args[0];
+        let content = args[0];
 
         for (let i = 0; i < args.length - 1; i++) {
-            x += " " + args[i + 1];
+            content += " " + args[i + 1];
         }
 
-        message.channel.send(":crab: " + x + " IS GONE :crab: " + x + " IS GONE :crab: " + x + " IS GONE :crab:")
+        if (content == undefined) {
+            message.channel.send({embed: {
+                color: 15158332,
+                description: "Missing parameter(s): `!crabrave <something>`"
+            }});
+        } else {
+            message.channel.send(":crab: " + content.toUpperCase() + " IS GONE :crab: " + content.toUpperCase() + " IS GONE :crab: " + content.toUpperCase() + " IS GONE :crab:")
+        }
     }
 }
 
@@ -98,7 +106,7 @@ exports.games = message => {
             user += " " + args[i + 1];
         }
 
-        var regex = /[a-z 0-9\-\_]/gi;
+        var regex = /[a-z0-9 -_]/gi;
 
         if (user == null || mode == null) {
             message.channel.send({embed: {
@@ -128,51 +136,42 @@ exports.games = message => {
                     description: "User was not found"
                 }});
             } else {
-                get_data();
-            }
-        }
+                https.get('https://osu.ppy.sh/api/get_user?k=' + process.env.OSU_API_KEY + '&m=' + mode_id + '&u=' + user, (res) => {
+                    let data = '';
 
-        // Get data through osu!api
-        function get_data() {
-            https.get('https://osu.ppy.sh/api/get_user?k=' + process.env.OSU_API_KEY + '&m=' + mode_id + '&u=' + user, (res) => {
-                let data = '';
+                    res.on('data', (chunk) => {
+                        data += chunk;
+                    });
 
-                res.on('data', (chunk) => {
-                    data += chunk;
-                });
-
-                res.on('end', () => {
-                    var osu_data = JSON.parse(data);
-                    if (osu_data[0] === undefined) {
-                        message.channel.send({embed: {
-                            color: 15158332,
-                            description: "User was not found"
-                        }});
-                    } else {
-                        function nrSep(n) {
-                            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    res.on('end', () => {
+                        var osu_data = JSON.parse(data);
+                        if (osu_data[0] === undefined) {
+                            message.channel.send({embed: {
+                                color: 15158332,
+                                description: "User was not found"
+                            }});
+                        } else {
+                            let embed = new Discord.RichEmbed()
+                            .setColor(0xF26FC2)
+                            .setAuthor(osu_data[0].username, "https://osu.ppy.sh/images/flags/" + osu_data[0].country + ".png")
+                            .setDescription("Showing **osu!" + mode + "** stats of user [" + osu_data[0].username + "](https://osu.ppy.sh/users/" + osu_data[0].user_id + ")")
+                            .addField("Performance Points (pp)", functions.nrSep(parseFloat(osu_data[0].pp_raw).toFixed(2)), true)
+                            .addField("Accuracy", parseFloat(osu_data[0].accuracy).toFixed(2) + "%", true)
+                            .addField("Rank", (osu_data[0].pp_rank) + " (Global)\n" + functions.nrSep(osu_data[0].pp_country_rank) + " (" + osu_data[0].country + ")", true)
+                            .addField("Score", functions.nrSep(osu_data[0].ranked_score) + " (Ranked)\n" + functions.nrSep(osu_data[0].total_score) + " (Total)", true)
+                            .addField("Playcount", functions.nrSep(osu_data[0].playcount), true)
+                            .addField("level", parseFloat(osu_data[0].level).toFixed(1), true)
+                            .setFooter("Visit player profile for all stats")
+                            .setURL("https://osu.ppy.sh/users/" + osu_data[0].user_id)
+                            .setThumbnail("https://a.ppy.sh/" + osu_data[0].user_id)
+                            message.channel.send({embed})
+                            logger.info(message.member.user.tag + " issued osu!api GET request");
                         }
-
-                        const embed = new Discord.RichEmbed()
-                        .setColor(0xF26FC2)
-                        .setAuthor(osu_data[0].username, "https://osu.ppy.sh/images/flags/" + osu_data[0].country + ".png")
-                        .setDescription("Showing **osu!" + mode + "** stats of user [" + osu_data[0].username + "](https://osu.ppy.sh/users/" + osu_data[0].user_id + ")")
-                        .addField("Performance Points (pp)", nrSep(parseFloat(osu_data[0].pp_raw).toFixed(2)), true)
-                        .addField("Accuracy", parseFloat(osu_data[0].accuracy).toFixed(2) + "%", true)
-                        .addField("Rank", nrSep(osu_data[0].pp_rank) + " (Global)\n" + nrSep(osu_data[0].pp_country_rank) + " (" + osu_data[0].country + ")", true)
-                        .addField("Score", nrSep(osu_data[0].ranked_score) + " (Ranked)\n" + nrSep(osu_data[0].total_score) + " (Total)", true)
-                        .addField("Playcount", nrSep(osu_data[0].playcount), true)
-                        .addField("level", parseFloat(osu_data[0].level).toFixed(1), true)
-                        .setFooter("Visit player profile for all stats")
-                        .setURL("https://osu.ppy.sh/users/" + osu_data[0].user_id)
-                        .setThumbnail("https://a.ppy.sh/" + osu_data[0].user_id)
-                        message.channel.send({embed})
-                        logger.info(message.member.user.tag + " issued osu!api GET request");
-                    }
+                    });
+                }).on("error", (err) => {
+                        logger.warn("Error: " + err.message);
                 });
-            }).on("error", (err) => {
-                    logger.warn("Error: " + err.message);
-            });
+            }
         }
     }
 }

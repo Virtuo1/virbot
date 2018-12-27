@@ -1,10 +1,9 @@
 const Discord = require('discord.js');
 const logger = require('winston');
 const package = require('./package.json');
-const config = require('./config.json');
 
 // Require commands
-const commands = require('./main');
+const commands = require('./commands');
 
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
