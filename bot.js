@@ -3,7 +3,7 @@ const logger = require('winston');
 const package = require('./package.json');
 
 // Require commands
-const commands = require('./commands');
+const command = require('./commands');
 
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -32,9 +32,4 @@ bot.on('ready', () => {
     });
 });
 
-// Commands
-bot.on('message', commands.help);
-bot.on('message', commands.utility);
-bot.on('message', commands.fun);
-bot.on('message', commands.games);
-bot.on('message', commands.misc);
+bot.on('message', command);
