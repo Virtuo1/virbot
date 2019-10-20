@@ -1,9 +1,13 @@
 const Discord = require('discord.js');
 const logger = require('winston');
 const package = require('./package.json');
+const pool = require('./db');
 
-// Require commands
-const command = require('./commands');
+pool.connect();
+
+// Require events
+const command = require('./events/command');
+const guildMemberAdd = require('./events/guildMemberAdd');
 
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -15,7 +19,7 @@ logger.level = 'debug';
 // Create bot client & login
 const bot = new Discord.Client();
 
-bot.login(process.env.TOKEN);
+bot.login(process.env.BOT_TOKEN);
 
 // On ready
 bot.on('ready', () => {
@@ -33,3 +37,4 @@ bot.on('ready', () => {
 });
 
 bot.on('message', command);
+bot.on('guildMemberAdd', guildMemberAdd);
