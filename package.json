@@ -1,6 +1,6 @@
 {
   "name": "virbot",
-  "version": "0.4-alpha",
+  "version": "0.4.0",
   "description": "A Discord bot.",
   "main": "bot.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/Virtuo1/virbot#readme",
   "dependencies": {
-    "discord.js": "^11.4.2",
+    "discord.js": "^11.5.1",
     "pg": "^7.12.1",
     "winston": "2.*"
   }
