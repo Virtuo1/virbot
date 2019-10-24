@@ -58,6 +58,79 @@ module.exports = message => {
                     message.channel.send("¯\\_(ツ)_/¯");
                 }
             },
+            "8ball": {
+                usage: prefix + "8ball",
+                help: prefix + "8ball <question>",
+                description: "Ask the 8ball anything!",
+                type: "fun",
+                process: () => {
+                    let answerNumber = Math.floor(Math.random() * 20);
+                    let answerMessage;
+                    switch (answerNumber) {
+                        case 0:
+                            answerMessage = "It is certain.";
+                            break;
+                        case 1:
+                            answerMessage = "It is decidedly so.";
+                            break;
+                        case 2:
+                            answerMessage = "Without a doubt.";
+                            break;
+                        case 3:
+                            answerMessage = "Yes - definitely.";
+                            break;
+                        case 4:
+                            answerMessage = "You may rely on it.";
+                            break;
+                        case 5:
+                            answerMessage = "As I see it, yes.";
+                            break;
+                        case 6:
+                            answerMessage = "Most likely.";
+                            break;
+                        case 7:
+                            answerMessage = "Outlook good.";
+                            break;
+                        case 8:
+                            answerMessage = "Yes.";
+                            break;
+                        case 9:
+                            answerMessage = "Signs point to yes.";
+                            break;
+                        case 10:
+                            answerMessage = "Reply hazy, try again.";
+                            break;
+                        case 11:
+                            answerMessage = "Ask again later.";
+                            break;
+                        case 12:
+                            answerMessage = "Better not tell you now.";
+                            break;
+                        case 13:
+                            answerMessage = "Cannot predict now.";
+                            break;
+                        case 14:
+                            answerMessage = "Concentrate and ask again.";
+                            break;
+                        case 15:
+                            answerMessage = "Don't count on it.";
+                            break;
+                        case 16:
+                            answerMessage = "My reply is no.";
+                            break;
+                        case 17:
+                            answerMessage = "My sources say no.";
+                            break;
+                        case 18:
+                            answerMessage = "Outlook not so good.";
+                            break;
+                        case 19:
+                            answerMessage = "Very doubtful.";
+                            break;
+                    }
+                    message.channel.send(answerMessage);
+                }
+            },
             "osu": {
                 usage: prefix + "osu",
                 help: prefix + "osu <gamemode> <user>",
@@ -235,17 +308,33 @@ module.exports = message => {
                         helpFieldFun += "```";
                         helpFieldMisc += "```";
         
-                        const embed = new Discord.RichEmbed()
-                        .setColor(10181046)
-                        .setTitle("**Showing all commands**")
-                        .setDescription("Requested by " + message.member.user)
-                        .addField("Help", helpFieldInfo, true)
-                        .addField("Administration", helpFieldAdministration, true)
-                        .addField("Utility", helpFieldUtility, true)
-                        .addField("Games", helpFieldGames, true)
-                        .addField("Fun", helpFieldFun, true)
-                        .addField("Misc", helpFieldMisc, true)
-                        .setFooter(`Type ${prefix}help <command> for further help`)
+                        let embed;
+
+                        // Check if user has admin permissions
+                        if (message.member.hasPermissions('ADMINISTRATOR')) {
+                            embed = new Discord.RichEmbed()
+                            .setColor(10181046)
+                            .setTitle("**Showing all commands**")
+                            .setDescription("Requested by " + message.member.user)
+                            .addField("Help", helpFieldInfo, true)
+                            .addField("Administration", helpFieldAdministration, true) // Admin permissions
+                            .addField("Utility", helpFieldUtility, true)
+                            .addField("Games", helpFieldGames, true)
+                            .addField("Fun", helpFieldFun, true)
+                            .addField("Misc", helpFieldMisc, true)
+                            .setFooter(`Type ${prefix}help <command> for further help`)
+                        } else {
+                            embed = new Discord.RichEmbed()
+                            .setColor(10181046)
+                            .setTitle("**Showing all commands**")
+                            .setDescription("Requested by " + message.member.user)
+                            .addField("Help", helpFieldInfo, true)
+                            .addField("Utility", helpFieldUtility, true)
+                            .addField("Games", helpFieldGames, true)
+                            .addField("Fun", helpFieldFun, true)
+                            .addField("Misc", helpFieldMisc, true)
+                            .setFooter(`Type ${prefix}help <command> for further help`)
+                        }
                         message.channel.send({embed})
                     }
                 }
